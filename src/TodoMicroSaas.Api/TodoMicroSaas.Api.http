@@ -1,6 +1,11 @@
 @TodoMicroSaas.Api_HostAddress = https://localhost:7059
 
-GET {{TodoMicroSaas.Api_HostAddress}}/weatherforecast/
-Accept: application/json
+POST {{TodoMicroSaas.Api_HostAddress}}/users/
+Content-Type: application/json
+
+{
+    "name": "Test User",
+    "email": "test@example.com"
+}
 
 ###

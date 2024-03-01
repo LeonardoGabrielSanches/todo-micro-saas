@@ -1,8 +1,10 @@
 using Microsoft.EntityFrameworkCore;
 using TodoMicroSaas.Domain.Interfaces;
+using TodoMicroSaas.Domain.Repositories;
 using TodoMicroSaas.Domain.UseCases;
 using TodoMicroSaas.Infrastructure.CrossCutting.Payments;
 using TodoMicroSaas.Infrastructure.Data;
+using TodoMicroSaas.Infrastructure.Data.Repositories;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -14,8 +16,9 @@ builder.Services.AddDbContext<TodoMicroSaasContext>(options =>
     options.UseNpgsql(builder.Configuration["ConnectionString:DefaultConnection"]));
 
 builder.Services.AddScoped<CreateUserUseCase>();
-builder.Services.AddScoped<CreateTodoUseCase>();
+// builder.Services.AddScoped<CreateTodoUseCase>();
 builder.Services.AddScoped<IPaymentService, StripeService>();
+builder.Services.AddScoped<IUserRepository, UserRepository>();
 
 var app = builder.Build();
 
@@ -27,5 +30,12 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+
+app.MapGroup("users").MapPost("/", async (CreateUserRequest request, CreateUserUseCase createUserUseCase) =>
+{
+    var response = await createUserUseCase.Execute(request);
+
+    return Results.Created("", response);
+});
 
 app.Run();

@@ -19,8 +19,6 @@ public class TodoMicroSaasContext(DbContextOptions<TodoMicroSaasContext> options
         userBuilder.HasIndex(x => x.Email);
         userBuilder.Property(x => x.CustomerId).HasColumnName("customer_id").IsRequired();
         userBuilder.Property(x => x.SubscriptionId).HasColumnName("subscription_id");
-        userBuilder.Property(x => x.CreatedAt).HasColumnName("created_at").IsRequired();
-        userBuilder.Property(x => x.UpdatedAt).HasColumnName("updated_at");
         userBuilder.HasMany(x => x.Todos)
             .WithOne(x => x.Owner)
             .HasForeignKey(x => x.OwnerId);
@@ -33,8 +31,6 @@ public class TodoMicroSaasContext(DbContextOptions<TodoMicroSaasContext> options
         todoBuilder.Property(x => x.Description).HasColumnName("description").IsRequired();
         todoBuilder.Property(x => x.Done).HasColumnName("done").HasDefaultValue(false);
         todoBuilder.Property(x => x.OwnerId).HasColumnName("owner_id").IsRequired();
-        todoBuilder.Property(x => x.CreatedAt).HasColumnName("created_at").IsRequired();
-        todoBuilder.Property(x => x.UpdatedAt).HasColumnName("updated_at");
         todoBuilder.ToTable("todos");
     }
 }

@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using TodoMicroSaas.Infrastructure.Data;
@@ -11,9 +12,11 @@ using TodoMicroSaas.Infrastructure.Data;
 namespace TodoMicroSaas.Infrastructure.Data.Migrations
 {
     [DbContext(typeof(TodoMicroSaasContext))]
-    partial class TodoMicroSaasContextModelSnapshot : ModelSnapshot
+    [Migration("20240301182253_RemoveDates")]
+    partial class RemoveDates
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
