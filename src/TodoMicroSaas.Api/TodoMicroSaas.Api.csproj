@@ -6,6 +6,7 @@
         <ImplicitUsings>enable</ImplicitUsings>
         <InvariantGlobalization>true</InvariantGlobalization>
         <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
+        <UserSecretsId>56b40d06-3302-4517-91b9-eee80411efaa</UserSecretsId>
     </PropertyGroup>
 
     <ItemGroup>
@@ -24,6 +25,7 @@
     </ItemGroup>
 
     <ItemGroup>
+      <ProjectReference Include="..\TodoMicroSaas.Infrastructure.CrossCutting\TodoMicroSaas.Infrastructure.CrossCutting.csproj" />
       <ProjectReference Include="..\TodoMicroSaas.Infrastructure.Data\TodoMicroSaas.Infrastructure.Data.csproj" />
     </ItemGroup>
 
