@@ -5,6 +5,7 @@ using TodoMicroSaas.Domain.UseCases;
 using TodoMicroSaas.Infrastructure.CrossCutting.Payments;
 using TodoMicroSaas.Infrastructure.Data;
 using TodoMicroSaas.Infrastructure.Data.Repositories;
+using CreateCheckoutSessionRequest = TodoMicroSaas.Domain.UseCases.CreateCheckoutSessionRequest;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -16,6 +17,7 @@ builder.Services.AddDbContext<TodoMicroSaasContext>(options =>
     options.UseNpgsql(builder.Configuration["ConnectionString:DefaultConnection"]));
 
 builder.Services.AddScoped<CreateUserUseCase>();
+builder.Services.AddScoped<CreateCheckoutSessionUseCase>();
 // builder.Services.AddScoped<CreateTodoUseCase>();
 builder.Services.AddScoped<IPaymentService, StripeService>();
 builder.Services.AddScoped<IUserRepository, UserRepository>();
@@ -31,11 +33,22 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
-app.MapGroup("users").MapPost("/", async (CreateUserRequest request, CreateUserUseCase createUserUseCase) =>
+app.MapPost("/users", async (CreateUserRequest request, CreateUserUseCase createUserUseCase) =>
 {
     var response = await createUserUseCase.Execute(request);
 
     return Results.Created("", response);
 });
+
+app.MapGet("/checkout", async (HttpContext context, CreateCheckoutSessionUseCase createCheckoutSessionUseCase) =>
+{
+    var userId = context.Request.Headers["x-user-id"].ToString();
+
+    var response = await createCheckoutSessionUseCase.Execute(new CreateCheckoutSessionRequest(Guid.Parse(userId)));
+
+    return Results.Ok(new { checkoutUrl = response });
+});
+
+app.MapGet("/success", () => Results.Ok(new { response = "Checkout successfully created" }));
 
 app.Run();
