@@ -4,6 +4,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TodoMicroSaas.Domain", "src
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TodoMicroSaas.Infrastructure.Data", "src\TodoMicroSaas.Infrastructure.Data\TodoMicroSaas.Infrastructure.Data.csproj", "{4191189C-CCFF-425B-AAAA-9FF973ED7501}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TodoMicroSaas.Api", "src\TodoMicroSaas.Api\TodoMicroSaas.Api.csproj", "{00187FF2-4422-4351-8BCF-C27E01CE18DB}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -18,5 +20,9 @@ Global
 		{4191189C-CCFF-425B-AAAA-9FF973ED7501}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{4191189C-CCFF-425B-AAAA-9FF973ED7501}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{4191189C-CCFF-425B-AAAA-9FF973ED7501}.Release|Any CPU.Build.0 = Release|Any CPU
+		{00187FF2-4422-4351-8BCF-C27E01CE18DB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{00187FF2-4422-4351-8BCF-C27E01CE18DB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{00187FF2-4422-4351-8BCF-C27E01CE18DB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{00187FF2-4422-4351-8BCF-C27E01CE18DB}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal

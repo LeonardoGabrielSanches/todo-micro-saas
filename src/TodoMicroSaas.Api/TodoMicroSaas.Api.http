@@ -1,0 +1,6 @@
+@TodoMicroSaas.Api_HostAddress = https://localhost:7059
+
+GET {{TodoMicroSaas.Api_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
