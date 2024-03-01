@@ -2,6 +2,8 @@
 Microsoft Visual Studio Solution File, Format Version 12.00
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TodoMicroSaas.Domain", "src\TodoMicroSaas.Domain\TodoMicroSaas.Domain.csproj", "{15E509AB-ACEE-4047-8548-1404CCF01AA9}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TodoMicroSaas.Infrastructure.Data", "src\TodoMicroSaas.Infrastructure.Data\TodoMicroSaas.Infrastructure.Data.csproj", "{4191189C-CCFF-425B-AAAA-9FF973ED7501}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -12,5 +14,9 @@ Global
 		{15E509AB-ACEE-4047-8548-1404CCF01AA9}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{15E509AB-ACEE-4047-8548-1404CCF01AA9}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{15E509AB-ACEE-4047-8548-1404CCF01AA9}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4191189C-CCFF-425B-AAAA-9FF973ED7501}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4191189C-CCFF-425B-AAAA-9FF973ED7501}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4191189C-CCFF-425B-AAAA-9FF973ED7501}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4191189C-CCFF-425B-AAAA-9FF973ED7501}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
