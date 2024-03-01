@@ -17,7 +17,8 @@ public class CreateCheckoutSessionUseCase(IUserRepository userRepository, IPayme
             throw new ResourceNotFoundException(nameof(User));
 
         var checkoutUrl =
-            await paymentService.CreateCheckoutSession(new Interfaces.CreateCheckoutSessionRequest(user.CustomerId));
+            await paymentService.CreateCheckoutSession(
+                new Interfaces.CreateCheckoutSessionRequest(user.Id.ToString(), user.CustomerId));
 
         return checkoutUrl;
     }

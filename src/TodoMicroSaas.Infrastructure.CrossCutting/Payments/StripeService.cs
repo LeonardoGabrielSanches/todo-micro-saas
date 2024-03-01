@@ -30,7 +30,8 @@ public class StripeService(IConfiguration configuration) : IPaymentService
     {
         var checkoutSession = await _sessionService.CreateAsync(new SessionCreateOptions
         {
-            ClientReferenceId = request.CustomerId,
+            ClientReferenceId = request.UserId,
+            Customer = request.CustomerId,
             SuccessUrl = "https://localhost:7059/success",
             LineItems =
             [

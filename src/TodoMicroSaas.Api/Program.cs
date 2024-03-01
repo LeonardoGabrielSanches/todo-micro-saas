@@ -1,4 +1,5 @@
 using Microsoft.EntityFrameworkCore;
+using Stripe;
 using TodoMicroSaas.Domain.Interfaces;
 using TodoMicroSaas.Domain.Repositories;
 using TodoMicroSaas.Domain.UseCases;
@@ -40,7 +41,7 @@ app.MapPost("/users", async (CreateUserRequest request, CreateUserUseCase create
     return Results.Created("", response);
 });
 
-app.MapGet("/checkout", async (HttpContext context, CreateCheckoutSessionUseCase createCheckoutSessionUseCase) =>
+app.MapPost("/checkout", async (HttpContext context, CreateCheckoutSessionUseCase createCheckoutSessionUseCase) =>
 {
     var userId = context.Request.Headers["x-user-id"].ToString();
 
@@ -49,6 +50,33 @@ app.MapGet("/checkout", async (HttpContext context, CreateCheckoutSessionUseCase
     return Results.Ok(new { checkoutUrl = response });
 });
 
-app.MapGet("/success", () => Results.Ok(new { response = "Checkout successfully created" }));
+app.MapGet("/success",
+    (IConfiguration configuration) => Results.Ok(new
+        { response = $"Checkout successfully created {configuration["Stripe:EndpointSecretWebhook"]}" }));
+
+app.MapPost("/webhook", async (HttpContext context, IConfiguration configuration) =>
+{
+    var json = await new StreamReader(context.Request.Body).ReadToEndAsync();
+    try
+    {
+        var stripeEvent = EventUtility.ConstructEvent(json,
+            context.Request.Headers["Stripe-Signature"], configuration["Stripe:EndpointSecretWebhook"]);
+
+        if (stripeEvent.Type == Events.SubscriptionScheduleCanceled)
+        {
+            Console.WriteLine("Chegou");
+        }
+        else
+        {
+            Console.WriteLine("Unhandled event type: {0}", stripeEvent.Type);
+        }
+
+        return Results.Ok();
+    }
+    catch (StripeException e)
+    {
+        return Results.BadRequest(e.Message);
+    }
+});
 
 app.Run();
