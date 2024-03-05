@@ -1,3 +1,4 @@
+using System.Text.Json;
 using Microsoft.EntityFrameworkCore;
 using Stripe;
 using TodoMicroSaas.Domain.Interfaces;
@@ -22,6 +23,7 @@ builder.Services.AddScoped<CreateCheckoutSessionUseCase>();
 // builder.Services.AddScoped<CreateTodoUseCase>();
 builder.Services.AddScoped<IPaymentService, StripeService>();
 builder.Services.AddScoped<IUserRepository, UserRepository>();
+builder.Services.AddScoped<UpdateSubscriptionUseCase>();
 
 var app = builder.Build();
 
@@ -54,29 +56,35 @@ app.MapGet("/success",
     (IConfiguration configuration) => Results.Ok(new
         { response = $"Checkout successfully created {configuration["Stripe:EndpointSecretWebhook"]}" }));
 
-app.MapPost("/webhook", async (HttpContext context, IConfiguration configuration) =>
-{
-    var json = await new StreamReader(context.Request.Body).ReadToEndAsync();
-    try
+app.MapPost("/webhook",
+    async (HttpContext context, IConfiguration configuration, UpdateSubscriptionUseCase updateSubscriptionUseCase) =>
     {
-        var stripeEvent = EventUtility.ConstructEvent(json,
-            context.Request.Headers["Stripe-Signature"], configuration["Stripe:EndpointSecretWebhook"]);
-
-        if (stripeEvent.Type == Events.SubscriptionScheduleCanceled)
+        try
         {
-            Console.WriteLine("Chegou");
-        }
-        else
-        {
-            Console.WriteLine("Unhandled event type: {0}", stripeEvent.Type);
-        }
+            var json = await new StreamReader(context.Request.Body).ReadToEndAsync();
 
-        return Results.Ok();
-    }
-    catch (StripeException e)
-    {
-        return Results.BadRequest(e.Message);
-    }
-});
+            var stripeEvent = EventUtility.ConstructEvent(json,
+                context.Request.Headers["Stripe-Signature"], configuration["Stripe:EndpointSecretWebhook"]);
+
+            if (stripeEvent.Data.RawObject.status.ToString() is not "active")
+                return Results.Ok();
+
+            switch (stripeEvent.Type)
+            {
+                case Events.CustomerSubscriptionCreated:
+                case Events.CustomerSubscriptionUpdated:
+                    await updateSubscriptionUseCase.Execute(
+                        new UpdateSubscriptionRequest(stripeEvent.Data.RawObject.customer.ToString(),
+                            stripeEvent.Data.RawObject.id.ToString()));
+                    break;
+            }
+
+            return Results.Ok();
+        }
+        catch (StripeException e)
+        {
+            return Results.BadRequest(e.Message);
+        }
+    });
 
 app.Run();
