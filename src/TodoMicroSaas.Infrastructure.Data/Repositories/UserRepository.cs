@@ -7,7 +7,9 @@ namespace TodoMicroSaas.Infrastructure.Data.Repositories;
 public class UserRepository(TodoMicroSaasContext context) : IUserRepository
 {
     public async Task<User?> GetById(Guid id)
-        => await context.Users.FirstOrDefaultAsync(x => x.Id == id);
+        => await context.Users
+            .Include(x => x.Todos)
+            .FirstOrDefaultAsync(x => x.Id == id);
 
     public async Task<User?> GetByCustomerId(string customerId)
         => await context.Users.FirstOrDefaultAsync(x => x.CustomerId == customerId);

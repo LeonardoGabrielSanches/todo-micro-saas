@@ -1,6 +1,7 @@
-using System.Text.Json;
+using System.Net;
 using Microsoft.EntityFrameworkCore;
 using Stripe;
+using TodoMicroSaas.Domain.Exceptions;
 using TodoMicroSaas.Domain.Interfaces;
 using TodoMicroSaas.Domain.Repositories;
 using TodoMicroSaas.Domain.UseCases;
@@ -8,6 +9,7 @@ using TodoMicroSaas.Infrastructure.CrossCutting.Payments;
 using TodoMicroSaas.Infrastructure.Data;
 using TodoMicroSaas.Infrastructure.Data.Repositories;
 using CreateCheckoutSessionRequest = TodoMicroSaas.Domain.UseCases.CreateCheckoutSessionRequest;
+using StripeException = Stripe.StripeException;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -20,10 +22,12 @@ builder.Services.AddDbContext<TodoMicroSaasContext>(options =>
 
 builder.Services.AddScoped<CreateUserUseCase>();
 builder.Services.AddScoped<CreateCheckoutSessionUseCase>();
-// builder.Services.AddScoped<CreateTodoUseCase>();
-builder.Services.AddScoped<IPaymentService, StripeService>();
-builder.Services.AddScoped<IUserRepository, UserRepository>();
+builder.Services.AddScoped<CreateTodoUseCase>();
 builder.Services.AddScoped<UpdateSubscriptionUseCase>();
+builder.Services.AddScoped<IPaymentService, StripeService>();
+
+builder.Services.AddScoped<IUserRepository, UserRepository>();
+builder.Services.AddScoped<ITodoRepository, TodoRepository>();
 
 var app = builder.Build();
 
@@ -51,6 +55,18 @@ app.MapPost("/checkout", async (HttpContext context, CreateCheckoutSessionUseCas
 
     return Results.Ok(new { checkoutUrl = response });
 });
+
+app.MapPost("/todos",
+    async (HttpContext context, CreateTodoUseCase createTodoUseCase, CreateTodoRequest request) =>
+    {
+        var userId = context.Request.Headers["x-user-id"].ToString();
+
+        request.SetOwner(Guid.Parse(userId));
+
+        var response = await createTodoUseCase.Execute(request);
+
+        return Results.Created("", response);
+    });
 
 app.MapGet("/success",
     (IConfiguration configuration) => Results.Ok(new
@@ -86,5 +102,24 @@ app.MapPost("/webhook",
             return Results.BadRequest(e.Message);
         }
     });
+
+app.Use(async (httpContext, next) =>
+{
+    try
+    {
+        await next();
+    }
+    catch (DomainException applicationException)
+    {
+        httpContext.Response.StatusCode = (int)HttpStatusCode.BadRequest;
+        await httpContext.Response.WriteAsJsonAsync(new { errors = new[] { applicationException.Message } });
+    }
+    catch (Exception e)
+    {
+        Console.WriteLine(e.Message);
+
+        httpContext.Response.StatusCode = (int)HttpStatusCode.InternalServerError;
+    }
+});
 
 app.Run();

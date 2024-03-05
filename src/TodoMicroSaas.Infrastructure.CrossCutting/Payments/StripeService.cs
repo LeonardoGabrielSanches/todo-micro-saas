@@ -14,6 +14,7 @@ public class StripeService(IConfiguration configuration) : IPaymentService
 
     private readonly CustomerService _customerService = new();
     private readonly SessionService _sessionService = new();
+    private readonly SubscriptionService _subscriptionService = new();
 
     public async Task<string> CreateCustomer(CreateCustomerRequest request)
     {
@@ -45,5 +46,15 @@ public class StripeService(IConfiguration configuration) : IPaymentService
         }, _stripeOptions);
 
         return checkoutSession.Url;
+    }
+
+    public async Task<bool> HasValidSubscription(string? subscriptionId)
+    {
+        if (string.IsNullOrEmpty(subscriptionId))
+            return false;
+        
+        var subscription = await _subscriptionService.GetAsync(subscriptionId, requestOptions: _stripeOptions);
+
+        return subscription.Status is "active";
     }
 }

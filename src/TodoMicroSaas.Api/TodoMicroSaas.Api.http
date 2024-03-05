@@ -11,7 +11,7 @@ Content-Type: application/json
 ###
 
 POST {{TodoMicroSaas.Api_HostAddress}}/checkout/
-x-user-id: 25d5f984-fe4b-497d-bf8a-92ded623117d
+x-user-id: 09fd4558-4805-49d3-8ad3-44053c65d763
 
 ###
 
@@ -19,6 +19,14 @@ GET {{TodoMicroSaas.Api_HostAddress}}/success/
 
 ###
 
-POST {{TodoMicroSaas.Api_HostAddress}}/webhook
+POST {{TodoMicroSaas.Api_HostAddress}}/todos
+Content-Type: application/json
+x-user-id: 09fd4558-4805-49d3-8ad3-44053c65d763
+
+{
+    "description": "Test Todo 6 User 2"
+}
+
+
 
 
