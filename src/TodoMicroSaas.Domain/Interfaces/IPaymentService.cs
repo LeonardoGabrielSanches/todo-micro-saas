@@ -9,4 +9,5 @@ public interface IPaymentService
     Task<string> CreateCustomer(CreateCustomerRequest request);
     Task<string> CreateCheckoutSession(CreateCheckoutSessionRequest request);
     Task<bool> HasValidSubscription(string? subscriptionId);
+    Task Unsubscribe(string subscriptionId);
 }

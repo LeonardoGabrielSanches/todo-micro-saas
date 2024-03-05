@@ -27,6 +27,11 @@ x-user-id: 09fd4558-4805-49d3-8ad3-44053c65d763
     "description": "Test Todo 6 User 2"
 }
 
+###
+
+PATCH {{TodoMicroSaas.Api_HostAddress}}/subscriptions/cancel
+x-user-id: 09fd4558-4805-49d3-8ad3-44053c65d763
+
 
 
 

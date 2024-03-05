@@ -52,9 +52,12 @@ public class StripeService(IConfiguration configuration) : IPaymentService
     {
         if (string.IsNullOrEmpty(subscriptionId))
             return false;
-        
+
         var subscription = await _subscriptionService.GetAsync(subscriptionId, requestOptions: _stripeOptions);
 
         return subscription.Status is "active";
     }
+
+    public async Task Unsubscribe(string subscriptionId)
+        => await _subscriptionService.CancelAsync(subscriptionId, requestOptions: _stripeOptions);
 }

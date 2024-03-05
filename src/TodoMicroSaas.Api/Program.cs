@@ -24,6 +24,7 @@ builder.Services.AddScoped<CreateUserUseCase>();
 builder.Services.AddScoped<CreateCheckoutSessionUseCase>();
 builder.Services.AddScoped<CreateTodoUseCase>();
 builder.Services.AddScoped<UpdateSubscriptionUseCase>();
+builder.Services.AddScoped<CancelSubscriptionUseCase>();
 builder.Services.AddScoped<IPaymentService, StripeService>();
 
 builder.Services.AddScoped<IUserRepository, UserRepository>();
@@ -66,6 +67,16 @@ app.MapPost("/todos",
         var response = await createTodoUseCase.Execute(request);
 
         return Results.Created("", response);
+    });
+
+app.MapPatch("/subscriptions/cancel",
+    async (HttpContext context, CancelSubscriptionUseCase cancelSubscriptionUseCase) =>
+    {
+        var userId = context.Request.Headers["x-user-id"].ToString();
+
+        await cancelSubscriptionUseCase.Execute(new CancelSubscriptionRequest(Guid.Parse(userId)));
+
+        return Results.NoContent();
     });
 
 app.MapGet("/success",

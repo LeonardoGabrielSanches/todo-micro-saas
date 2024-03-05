@@ -16,7 +16,7 @@ public class User(
 
     public void Subscribe(string? subscriptionId)
         => SubscriptionId = subscriptionId;
-
-    public void AddTodo(Todo todo)
-        => _todos.Add(todo);
+    
+    public void Unsubscribe()
+        => SubscriptionId = null;
 }
