@@ -38,7 +38,7 @@ public class StripeService(IConfiguration configuration) : IPaymentService
             [
                 new SessionLineItemOptions
                 {
-                    Price = configuration["Stripe:PremiumKey"],
+                    Price = configuration["Stripe:PremiumPriceKey"],
                     Quantity = 1
                 }
             ],
