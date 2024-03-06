@@ -21,10 +21,15 @@ builder.Services.AddDbContext<TodoMicroSaasContext>(options =>
     options.UseNpgsql(builder.Configuration["ConnectionString:DefaultConnection"]));
 
 builder.Services.AddScoped<CreateUserUseCase>();
+
 builder.Services.AddScoped<CreateCheckoutSessionUseCase>();
-builder.Services.AddScoped<CreateTodoUseCase>();
 builder.Services.AddScoped<UpdateSubscriptionUseCase>();
 builder.Services.AddScoped<CancelSubscriptionUseCase>();
+
+builder.Services.AddScoped<CreateTodoUseCase>();
+builder.Services.AddScoped<GetAllTodosByOwnerUseCase>();
+builder.Services.AddScoped<ToggleTodoDoneUseCase>();
+
 builder.Services.AddScoped<IPaymentService, StripeService>();
 
 builder.Services.AddScoped<IUserRepository, UserRepository>();
@@ -57,6 +62,16 @@ app.MapPost("/checkout", async (HttpContext context, CreateCheckoutSessionUseCas
     return Results.Ok(new { checkoutUrl = response });
 });
 
+app.MapGet("/todos",
+    async (HttpContext context, GetAllTodosByOwnerUseCase getAllTodosByOwnerRequest) =>
+    {
+        var userId = context.Request.Headers["x-user-id"].ToString();
+
+        var response = await getAllTodosByOwnerRequest.Execute(new GetAllTodosByOwnerRequest(Guid.Parse(userId)));
+
+        return Results.Ok(response);
+    });
+
 app.MapPost("/todos",
     async (HttpContext context, CreateTodoUseCase createTodoUseCase, CreateTodoRequest request) =>
     {
@@ -69,6 +84,16 @@ app.MapPost("/todos",
         return Results.Created("", response);
     });
 
+app.MapPatch("/todos/{todoId:guid}/done",
+    async (HttpContext context, GetAllTodosByOwnerUseCase getAllTodosByOwnerUseCase, Guid todoId) =>
+    {
+        var userId = context.Request.Headers["x-user-id"].ToString();
+
+        var response = await getAllTodosByOwnerUseCase.Execute(new GetAllTodosByOwnerRequest(Guid.Parse(userId)));
+
+        return Results.Ok(response);
+    });
+
 app.MapPatch("/subscriptions/cancel",
     async (HttpContext context, CancelSubscriptionUseCase cancelSubscriptionUseCase) =>
     {
@@ -78,10 +103,6 @@ app.MapPatch("/subscriptions/cancel",
 
         return Results.NoContent();
     });
-
-app.MapGet("/success",
-    (IConfiguration configuration) => Results.Ok(new
-        { response = $"Checkout successfully created {configuration["Stripe:EndpointSecretWebhook"]}" }));
 
 app.MapPost("/webhook",
     async (HttpContext context, IConfiguration configuration, UpdateSubscriptionUseCase updateSubscriptionUseCase) =>

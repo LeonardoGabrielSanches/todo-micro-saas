@@ -10,6 +10,10 @@ Content-Type: application/json
 
 ###
 
+POST {{TodoMicroSaas.Api_HostAddress}}/sessions/09fd4558-4805-49d3-8ad3-44053c65d763/
+
+###
+
 POST {{TodoMicroSaas.Api_HostAddress}}/checkout/
 x-user-id: 09fd4558-4805-49d3-8ad3-44053c65d763
 

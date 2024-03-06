@@ -9,4 +9,7 @@ public class Todo(
     public Guid OwnerId { get; private set; } = ownerId;
 
     public User? Owner { get; private set; }
+
+    public void ToggleDone()
+        => Done = !Done;
 }
