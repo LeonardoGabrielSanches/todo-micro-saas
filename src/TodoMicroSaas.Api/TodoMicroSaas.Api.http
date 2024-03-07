@@ -19,10 +19,6 @@ x-user-id: 09fd4558-4805-49d3-8ad3-44053c65d763
 
 ###
 
-GET {{TodoMicroSaas.Api_HostAddress}}/success/
-
-###
-
 POST {{TodoMicroSaas.Api_HostAddress}}/todos
 Content-Type: application/json
 x-user-id: 09fd4558-4805-49d3-8ad3-44053c65d763
